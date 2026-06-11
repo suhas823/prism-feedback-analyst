@@ -21,7 +21,7 @@ TEXT_DIM = "#8B94A7"
 PLOTLY_LAYOUT = dict(
     paper_bgcolor="rgba(0,0,0,0)",
     plot_bgcolor="rgba(0,0,0,0)",
-    font=dict(family="Inter, sans-serif", color="#A9B2C3", size=12),
+    font=dict(family="IBM Plex Sans, sans-serif", color="#A9B2C3", size=12),
     xaxis=dict(gridcolor="rgba(255,255,255,0.06)", zerolinecolor="rgba(255,255,255,0.1)"),
     yaxis=dict(gridcolor="rgba(255,255,255,0.06)", zerolinecolor="rgba(255,255,255,0.1)"),
     colorway=[INDIGO, CYAN, GREEN, AMBER, ROSE, "#A78BFA", "#34D399", "#F472B6"],
@@ -30,9 +30,9 @@ PLOTLY_LAYOUT = dict(
 
 _CSS = """
 <style>
-@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&family=Space+Grotesk:wght@500;600;700&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Fraunces:opsz,wght@9..144,450..750&family=IBM+Plex+Sans:wght@400;500;600;700&family=IBM+Plex+Mono:wght@500;600;700&display=swap');
 
-html, body, .stApp, [class*="css"] { font-family: 'Inter', sans-serif; }
+html, body, .stApp, [class*="css"] { font-family: 'IBM Plex Sans', sans-serif; }
 
 .stApp {
   background:
@@ -57,19 +57,21 @@ html, body, .stApp, [class*="css"] { font-family: 'Inter', sans-serif; }
 }
 [data-testid="stSidebar"] * { font-size: .92rem; }
 
-h1, h2, h3 { font-family: 'Space Grotesk', 'Inter', sans-serif !important; letter-spacing: -.01em; }
+h1, h2, h3 { font-family: 'Fraunces', Georgia, serif !important; letter-spacing: 0; font-weight: 600; }
 
 /* ── Hero ── */
 .hero { padding: .6rem 0 1.2rem 0; }
 .hero-badge {
   display: inline-flex; align-items: center; gap: .45rem;
-  font-size: .72rem; font-weight: 700; letter-spacing: .16em;
+  font-family: 'IBM Plex Mono', monospace;
+  font-size: .7rem; font-weight: 600; letter-spacing: .16em;
   color: #A5B4FC; text-transform: uppercase;
   border: 1px solid rgba(99,102,241,.35); border-radius: 999px;
   padding: .3rem .8rem; background: rgba(99,102,241,.10);
 }
 .hero h1 {
-  font-size: 2.6rem; font-weight: 700; margin: .55rem 0 .2rem 0; color: #F1F4FA;
+  font-family: 'Fraunces', Georgia, serif;
+  font-size: 2.9rem; font-weight: 650; margin: .55rem 0 .2rem 0; color: #F1F4FA;
 }
 .hero h1 .grad {
   background: linear-gradient(90deg, #818CF8, #22D3EE);
@@ -89,8 +91,8 @@ h1, h2, h3 { font-family: 'Space Grotesk', 'Inter', sans-serif !important; lette
   background: linear-gradient(90deg, #6366F1, #22D3EE);
   opacity: .8;
 }
-.kpi-label { font-size: .74rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #8B94A7; }
-.kpi-value { font-family: 'Space Grotesk'; font-size: 1.85rem; font-weight: 700; color: #F1F4FA; margin-top: .15rem; }
+.kpi-label { font-family: 'IBM Plex Mono', monospace; font-size: .68rem; font-weight: 600; letter-spacing: .08em; text-transform: uppercase; color: #8B94A7; }
+.kpi-value { font-family: 'IBM Plex Mono', monospace; font-size: 1.7rem; font-weight: 700; color: #F1F4FA; margin-top: .15rem; }
 .kpi-sub { font-size: .78rem; color: #6C7689; margin-top: .1rem; }
 
 /* ── Glass card ── */
@@ -100,7 +102,7 @@ h1, h2, h3 { font-family: 'Space Grotesk', 'Inter', sans-serif !important; lette
   padding: 1.3rem 1.5rem; margin: .6rem 0;
 }
 .glass h3 { margin-top: 0; font-size: 1.28rem; line-height: 1.35; color: #F1F4FA; }
-.glass-title { font-size: .76rem; font-weight: 700; letter-spacing: .12em; text-transform: uppercase; color: #818CF8; margin-bottom: .5rem; }
+.glass-title { font-family: 'IBM Plex Mono', monospace; font-size: .7rem; font-weight: 600; letter-spacing: .12em; text-transform: uppercase; color: #818CF8; margin-bottom: .5rem; }
 
 /* ── Chips ── */
 .chip {
@@ -125,7 +127,7 @@ h1, h2, h3 { font-family: 'Space Grotesk', 'Inter', sans-serif !important; lette
 }
 .trow:hover { border-color: rgba(129,140,248,.45); transform: translateY(-1px); }
 .trank {
-  font-family: 'Space Grotesk'; font-weight: 700; font-size: 1.05rem; color: #5B647A;
+  font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: 1rem; color: #5B647A;
   width: 36px; height: 36px; border-radius: 10px; display: flex; align-items: center; justify-content: center;
   background: rgba(255,255,255,.04); border: 1px solid rgba(255,255,255,.07);
 }
@@ -134,7 +136,7 @@ h1, h2, h3 { font-family: 'Space Grotesk', 'Inter', sans-serif !important; lette
 .tbar { display: flex; align-items: center; gap: .6rem; }
 .tbar-track { flex: 1; height: 7px; border-radius: 99px; background: rgba(255,255,255,.07); overflow: hidden; }
 .tbar-fill { height: 100%; border-radius: 99px; background: linear-gradient(90deg, #6366F1, #22D3EE); }
-.tbar-val { font-family: 'Space Grotesk'; font-weight: 700; font-size: .92rem; color: #C7CDDB; min-width: 38px; }
+.tbar-val { font-family: 'IBM Plex Mono', monospace; font-weight: 700; font-size: .88rem; color: #C7CDDB; min-width: 42px; }
 
 /* ── Quote cards ── */
 .quote {
@@ -161,7 +163,7 @@ h1, h2, h3 { font-family: 'Space Grotesk', 'Inter', sans-serif !important; lette
 .cause-text { color: #B6BECF; font-size: .92rem; line-height: 1.5; }
 
 /* Section heading */
-.section { font-family: 'Space Grotesk'; font-size: 1.12rem; font-weight: 700; color: #F1F4FA; margin: 1.4rem 0 .7rem 0; display: flex; align-items: center; gap: .55rem; }
+.section { font-family: 'Fraunces', Georgia, serif; font-size: 1.18rem; font-weight: 650; color: #F1F4FA; margin: 1.4rem 0 .7rem 0; display: flex; align-items: center; gap: .55rem; }
 .section .dot { width: 9px; height: 9px; border-radius: 3px; background: linear-gradient(135deg,#6366F1,#22D3EE); }
 
 /* Streamlit widget polish */
