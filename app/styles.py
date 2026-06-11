@@ -187,6 +187,30 @@ div[data-baseweb="select"] > div { border-radius: 12px !important; background: r
 [data-testid="stDataFrame"] { border: 1px solid rgba(255,255,255,.08); border-radius: 14px; }
 hr { border-color: rgba(255,255,255,.07) !important; }
 
+/* ── Floating Iris video widget ── */
+.iris-float {
+  position: fixed; right: 26px; bottom: 26px; z-index: 1000;
+  width: 200px; text-decoration: none; display: block;
+  border-radius: 18px; overflow: hidden;
+  border: 1px solid rgba(129,140,248,.35);
+  background: rgba(13,17,26,.92);
+  box-shadow: 0 12px 40px rgba(0,0,0,.5), 0 0 24px rgba(99,102,241,.15);
+  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+}
+.iris-float:hover {
+  transform: translateY(-4px);
+  border-color: rgba(34,211,238,.6);
+  box-shadow: 0 16px 48px rgba(0,0,0,.55), 0 0 32px rgba(34,211,238,.25);
+}
+.iris-float video { display: block; width: 100%; height: auto; }
+.iris-float .iris-cap {
+  font-family: 'IBM Plex Mono', monospace; font-size: .68rem; font-weight: 600;
+  letter-spacing: .06em; color: #C7D2FE; text-align: center;
+  padding: .55rem .6rem; text-transform: uppercase;
+  background: linear-gradient(90deg, rgba(99,102,241,.18), rgba(34,211,238,.12));
+}
+@media (max-width: 900px) { .iris-float { display: none; } }
+
 /* ── Chat (Ask Iris) ── */
 [data-testid="stChatMessage"] {
   background: linear-gradient(180deg, rgba(255,255,255,.04), rgba(255,255,255,.015));
@@ -300,3 +324,12 @@ def cause_item(text: str) -> str:
         f'<div class="cause"><div class="cause-dot"></div>'
         f'<div class="cause-text">{esc(text)}</div></div>'
     )
+
+
+def iris_float(video_url: str, href: str, caption: str) -> str:
+    """Floating bottom-right video card that links to the Iris chat page."""
+    return f"""
+<a class="iris-float" href="{esc(href)}" target="_self" title="{esc(caption)}">
+  <video autoplay loop muted playsinline src="{esc(video_url)}"></video>
+  <div class="iris-cap">💠 {esc(caption)}</div>
+</a>"""

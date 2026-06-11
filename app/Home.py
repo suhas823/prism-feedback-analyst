@@ -120,3 +120,11 @@ meta = load_run_meta()
 if meta:
     with st.expander("Run metadata"):
         st.json(meta)
+
+# ── Floating Iris (video avatar → chat page) ─────────────────────────────
+st.markdown(
+    ds.iris_float(
+        "/app/static/iris.mp4", "/Ask_Iris", "Ask Iris anything about feedback"
+    ),
+    unsafe_allow_html=True,
+)
