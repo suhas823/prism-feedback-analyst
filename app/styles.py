@@ -41,7 +41,16 @@ html, body, .stApp, [class*="css"] { font-family: 'IBM Plex Sans', sans-serif; }
     #0B0E14;
 }
 [data-testid="stHeader"] { background: transparent; }
-#MainMenu, footer, [data-testid="stToolbar"] { visibility: hidden; height: 0; }
+#MainMenu, footer { visibility: hidden; height: 0; }
+/* Hide Deploy/menu chrome but NOT the toolbar itself — the sidebar
+   expand button lives inside it. */
+[data-testid="stAppDeployButton"], [data-testid="stToolbarActions"],
+[data-testid="stMainMenu"] { display: none !important; }
+[data-testid="stSidebarCollapseButton"],
+[data-testid="stSidebarCollapsedControl"],
+[data-testid="stExpandSidebarButton"] {
+  visibility: visible !important; color: #C7CDDB !important;
+}
 
 /* Main content container: centered, generous width */
 [data-testid="stMainBlockContainer"], .block-container {
