@@ -189,25 +189,27 @@ hr { border-color: rgba(255,255,255,.07) !important; }
 
 /* ── Floating Iris video widget ── */
 .iris-float {
-  position: fixed; right: 26px; bottom: 26px; z-index: 1000;
-  width: 200px; text-decoration: none; display: block;
-  border-radius: 18px; overflow: hidden;
-  border: 1px solid rgba(129,140,248,.35);
-  background: rgba(13,17,26,.92);
-  box-shadow: 0 12px 40px rgba(0,0,0,.5), 0 0 24px rgba(99,102,241,.15);
-  transition: transform .18s ease, border-color .18s ease, box-shadow .18s ease;
+  position: fixed; right: 24px; bottom: 18px; z-index: 1000;
+  width: 110px; text-decoration: none; display: block;
+  transition: transform .18s ease, filter .18s ease;
 }
 .iris-float:hover {
-  transform: translateY(-4px);
-  border-color: rgba(34,211,238,.6);
-  box-shadow: 0 16px 48px rgba(0,0,0,.55), 0 0 32px rgba(34,211,238,.25);
+  transform: translateY(-4px) scale(1.04);
+  filter: drop-shadow(0 0 18px rgba(34,211,238,.35));
 }
-.iris-float video { display: block; width: 100%; height: auto; }
+.iris-float video {
+  display: block; width: 110px; height: 110px;
+  object-fit: cover; object-position: center;
+  border-radius: 50%;
+  /* video background is dark — blend it into the page so the character
+     appears cut-out, with no visible box */
+  mix-blend-mode: screen;
+}
 .iris-float .iris-cap {
-  font-family: 'IBM Plex Mono', monospace; font-size: .68rem; font-weight: 600;
-  letter-spacing: .06em; color: #C7D2FE; text-align: center;
-  padding: .55rem .6rem; text-transform: uppercase;
-  background: linear-gradient(90deg, rgba(99,102,241,.18), rgba(34,211,238,.12));
+  font-family: 'IBM Plex Mono', monospace; font-size: .58rem; font-weight: 600;
+  letter-spacing: .05em; color: #A5B4FC; text-align: center;
+  padding-top: .35rem; text-transform: uppercase;
+  text-shadow: 0 1px 6px rgba(0,0,0,.8);
 }
 @media (max-width: 900px) { .iris-float { display: none; } }
 
