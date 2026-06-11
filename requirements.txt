@@ -1,0 +1,36 @@
+# Core data
+pandas>=2.2
+pyarrow>=16.0
+numpy>=1.26
+
+# ML (all prebuilt wheels on Windows — no C++ build tools needed)
+scikit-learn>=1.5
+sentence-transformers>=3.0
+# NOTE: for a smaller install, pre-install CPU-only torch first:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+# LLM providers
+google-genai>=1.0
+groq>=0.11
+
+# Text signals
+vaderSentiment>=3.3
+langdetect>=1.0.9
+
+# App
+streamlit>=1.36
+plotly>=5.22
+
+# Config / infra
+pydantic>=2.7
+pydantic-settings>=2.3
+python-dotenv>=1.0
+PyYAML>=6.0
+tenacity>=8.3
+diskcache>=5.6
+
+# Data download
+kagglehub>=0.3
+
+# Dev
+pytest>=8.2

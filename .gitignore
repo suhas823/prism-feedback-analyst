@@ -1,0 +1,25 @@
+# Secrets
+.env
+
+# Data (reproducible via scripts/download_data.py; workspaces via the app)
+data/raw/
+data/interim/
+data/processed/
+data/workspaces/
+
+# Caches
+.cache/
+__pycache__/
+*.pyc
+.pytest_cache/
+.ipynb_checkpoints/
+
+# Environments
+.venv/
+venv/
+
+# OS / editor
+.DS_Store
+Thumbs.db
+.vscode/
+.idea/

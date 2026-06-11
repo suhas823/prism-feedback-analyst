@@ -1,0 +1,55 @@
+# ── Pipeline configuration ──────────────────────────────────────────────
+# All tunable knobs live here so behavior is auditable and reproducible.
+
+data:
+  reviews_sample_size: 2500        # rows sampled from the Play Store reviews source
+  tickets_sample_size: 1500        # rows sampled from the Twitter support source
+  random_seed: 42
+
+preprocess:
+  min_text_chars: 15               # drop items shorter than this after cleaning
+  language: en
+  near_dup_cosine: 0.92            # similarity above which an item is flagged near-duplicate
+
+embedding:
+  model_name: sentence-transformers/all-MiniLM-L6-v2
+  batch_size: 64
+
+clustering:
+  pca_components: 15               # chosen via scripts/tune_clustering.py sweep
+  min_cluster_size: 8              # HDBSCAN minimum cluster size
+  min_samples: 1                   # permissive density: dense cores act as theme seeds
+  noise_reassign_cosine: 0.55      # noise joins nearest core centroid above this cosine
+  kmeans_k_range: [8, 30]          # silhouette sweep range for the KMeans baseline
+
+llm:
+  provider: gemini                 # gemini | groq (overridable via LLM_PROVIDER env var)
+  gemini_model: gemini-2.5-flash
+  groq_model: llama-3.3-70b-versatile
+  requests_per_minute: 8           # throttle to stay under free-tier RPM
+  max_quotes_per_cluster: 15       # stratified sample size sent to the LLM
+  max_clusters_analyzed: 40        # safety cap on per-cluster LLM calls
+  synthesis_model: llama-3.1-8b-instant  # separate Groq daily-token bucket;
+                                   # set to "" to use the main model instead
+  cache_dir: .cache/llm
+
+scoring:
+  weights:
+    frequency: 0.35
+    severity: 0.35
+    recency: 0.15
+    diversity: 0.15
+  severity_mix:                    # components of the severity score S
+    llm: 0.5
+    rating: 0.3
+    sentiment: 0.2
+  recency_half_life_days: 90
+  min_items_insufficient: 5        # n < this → "Insufficient evidence", excluded from top ranks
+  min_items_low_sample: 15         # n < this → "Low sample" badge
+  low_cohesion_threshold: 0.35     # mean pairwise cosine below this → "mixed theme" warning
+  wilson_confidence: 0.95
+
+paths:
+  raw_dir: data/raw
+  interim_dir: data/interim
+  processed_dir: data/processed
