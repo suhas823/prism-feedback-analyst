@@ -6,6 +6,7 @@ The dashboard only reads pipeline artifacts — it never calls the LLM.
 from __future__ import annotations
 
 import json
+import os
 import sys
 from pathlib import Path
 
@@ -15,6 +16,17 @@ import streamlit as st
 PROJECT_ROOT = Path(__file__).resolve().parent.parent
 if str(PROJECT_ROOT) not in sys.path:
     sys.path.insert(0, str(PROJECT_ROOT))
+
+# On Streamlit Community Cloud there is no .env file — API keys are set in the
+# app's Secrets box. Bridge those into environment variables so load_config()
+# (which reads os.getenv) picks them up. Harmless locally: st.secrets raises
+# when no secrets file exists, and we never overwrite a real env value.
+try:
+    for _k, _v in st.secrets.items():
+        if isinstance(_v, str):
+            os.environ.setdefault(_k, _v)
+except Exception:
+    pass
 
 PROCESSED = PROJECT_ROOT / "data" / "processed"
 WORKSPACES = PROJECT_ROOT / "data" / "workspaces"

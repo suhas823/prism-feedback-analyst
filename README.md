@@ -32,11 +32,15 @@ py -3.12 -m venv .venv
 
 # 2. Install (CPU-only torch first keeps the install small)
 pip install torch --index-url https://download.pytorch.org/whl/cpu
-pip install -r requirements.txt
+pip install -r requirements-pipeline.txt
 
-# 3. API key (free): https://aistudio.google.com/apikey
-copy .env.example .env     # then paste your GEMINI_API_KEY
+# 3. API key (free): https://console.groq.com/keys or https://aistudio.google.com/apikey
+copy .env.example .env     # then paste your GROQ_API_KEY (or GEMINI_API_KEY)
 ```
+
+> `requirements.txt` is the slim set (dashboard + Iris only) used for hosted
+> deployment. `requirements-pipeline.txt` adds the ML stack you need to actually
+> run the pipeline, the upload feature, and the tests.
 
 ## Run
 
@@ -67,6 +71,27 @@ pytest
 | **Explore Feedback** | Searchable raw corpus + 2-D semantic cluster map |
 | **Methodology** | The full explainability contract: pipeline, formula with live weights, guardrails, limitations |
 | **Ask Iris** | Chat with the analysis: "top 3 problems?", "what should we fix first?" — answers grounded ONLY in the generated insights, never invented |
+
+## Deploy (Streamlit Community Cloud, free)
+
+The repo ships with a committed snapshot of the Spotify analysis
+(`data/processed/`), so a fresh deploy opens fully populated.
+
+1. Go to [share.streamlit.io](https://share.streamlit.io) and sign in with GitHub.
+2. **Create app** → pick this repo, branch `main`, main file **`app/Home.py`**.
+3. Under **Advanced settings → Secrets**, paste:
+
+   ```toml
+   LLM_PROVIDER = "groq"
+   GROQ_API_KEY = "your-groq-key"
+   ```
+
+4. Deploy. The four viewing pages work with no key at all; the key is only
+   needed for **Ask Iris** (live chat calls).
+
+The hosted app is view-only by design: uploads need the ML stack from
+`requirements-pipeline.txt`, so the New Analysis page there points people to run
+it locally.
 
 ## Project layout
 

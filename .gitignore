@@ -4,8 +4,14 @@
 # Data (reproducible via scripts/download_data.py; workspaces via the app)
 data/raw/
 data/interim/
-data/processed/
 data/workspaces/
+
+# Ignore generated artifacts EXCEPT the demo snapshot committed so the hosted
+# app opens populated (feedback + insights for the Spotify dataset).
+data/processed/*
+!data/processed/feedback.parquet
+!data/processed/insights.json
+!data/processed/run_meta.json
 
 # Caches
 .cache/

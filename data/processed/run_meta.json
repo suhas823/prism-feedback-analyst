@@ -1,0 +1,87 @@
+{
+  "started_at": "2026-06-11T11:52:40.414474+00:00",
+  "config": {
+    "data": {
+      "reviews_sample_size": 2500,
+      "tickets_sample_size": 1500,
+      "random_seed": 42
+    },
+    "preprocess": {
+      "min_text_chars": 15,
+      "language": "en",
+      "near_dup_cosine": 0.92
+    },
+    "embedding": {
+      "model_name": "sentence-transformers/all-MiniLM-L6-v2",
+      "batch_size": 64
+    },
+    "clustering": {
+      "pca_components": 15,
+      "min_cluster_size": 8,
+      "min_samples": 1,
+      "noise_reassign_cosine": 0.55,
+      "kmeans_k_range": [
+        8,
+        30
+      ]
+    },
+    "llm": {
+      "provider": "groq",
+      "gemini_model": "gemini-2.5-flash",
+      "groq_model": "llama-3.3-70b-versatile",
+      "requests_per_minute": 8,
+      "max_quotes_per_cluster": 15,
+      "max_clusters_analyzed": 40,
+      "synthesis_model": "llama-3.1-8b-instant",
+      "cache_dir": ".cache/llm"
+    },
+    "scoring": {
+      "weights": {
+        "frequency": 0.35,
+        "severity": 0.35,
+        "recency": 0.15,
+        "diversity": 0.15
+      },
+      "severity_mix": {
+        "llm": 0.5,
+        "rating": 0.3,
+        "sentiment": 0.2
+      },
+      "recency_half_life_days": 90.0,
+      "min_items_insufficient": 5,
+      "min_items_low_sample": 15,
+      "low_cohesion_threshold": 0.35,
+      "wilson_confidence": 0.95
+    },
+    "paths": {
+      "raw_dir": "data/raw",
+      "interim_dir": "data/interim",
+      "processed_dir": "data/processed"
+    }
+  },
+  "stages": {
+    "clean": {
+      "input": 4000,
+      "dropped_too_short": 61,
+      "dropped_non_english": 34,
+      "output": 3905
+    },
+    "exact_dupes_dropped": 1,
+    "near_dups_flagged": 7,
+    "clustering": {
+      "n_clusters": 57,
+      "noise_share": 0.136,
+      "soft_assigned_from_noise": 1974
+    },
+    "llm": {
+      "provider": "groq",
+      "model": "llama-3.3-70b-versatile",
+      "clusters_analyzed": 40,
+      "api_calls": 0,
+      "cache_hits": 40,
+      "synthesis_fallback": null
+    }
+  },
+  "finished_at": "2026-06-11T11:53:05.554116+00:00",
+  "duration_s": 25.2
+}

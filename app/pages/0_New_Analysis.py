@@ -11,7 +11,17 @@ from shared import PROJECT_ROOT, list_workspaces
 sys.path.insert(0, str(PROJECT_ROOT))
 
 from src.ingest.reviews_loader import RATING_COLS, TEXT_COLS, TIME_COLS, _pick  # noqa: E402
-from src.pipeline.workspace import MAX_UPLOAD_ROWS, run_analysis  # noqa: E402
+
+# The upload pipeline needs the heavy ML stack (torch, scikit-learn,
+# sentence-transformers). The hosted view-only demo installs the slim
+# requirements, so import defensively and explain rather than crash.
+try:
+    from src.pipeline.workspace import MAX_UPLOAD_ROWS, run_analysis  # noqa: E402
+
+    UPLOAD_AVAILABLE = True
+except ImportError:
+    UPLOAD_AVAILABLE = False
+    MAX_UPLOAD_ROWS = 5000
 
 st.set_page_config(page_title="Prism — New Analysis", page_icon="✦", layout="wide")
 ds.inject()
@@ -27,6 +37,19 @@ st.markdown(
     ),
     unsafe_allow_html=True,
 )
+
+if not UPLOAD_AVAILABLE:
+    st.info(
+        "**This hosted demo is view-only.** Live CSV analysis needs the full ML "
+        "stack (embeddings + clustering), which isn't installed on the free "
+        "hosting tier. To analyze your own feedback, clone the repo and run it "
+        "locally:\n\n"
+        "```\ngit clone https://github.com/suhas823/prism-feedback-analyst\n"
+        "pip install -r requirements-pipeline.txt\nstreamlit run app/Home.py\n```\n\n"
+        "Meanwhile, explore the full Spotify analysis on the other pages, or ask "
+        "**Iris** about it."
+    )
+    st.stop()
 
 GENERIC_TEXT_COLS = TEXT_COLS + ["feedback", "comment", "message", "body", "answer"]
 

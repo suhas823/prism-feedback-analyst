@@ -1,0 +1,22 @@
+# Full local dependencies — needed to RUN the pipeline
+# (python -m src.pipeline.run), the upload/New-Analysis feature, tests, and eval.
+# Includes everything in requirements.txt plus the ML stack.
+#
+#   pip install -r requirements-pipeline.txt
+#
+# On Windows/CPU, install the CPU-only torch first to avoid the huge CUDA build:
+#   pip install torch --index-url https://download.pytorch.org/whl/cpu
+
+-r requirements.txt
+
+# ML (embeddings, clustering, sentiment)
+scikit-learn>=1.5
+sentence-transformers>=3.0
+vaderSentiment>=3.3
+langdetect>=1.0.9
+
+# Data download
+kagglehub>=0.3
+
+# Dev
+pytest>=8.2
