@@ -46,7 +46,7 @@ class ClusteringConfig(BaseModel):
 class LLMConfig(BaseModel):
     provider: str = "gemini"
     gemini_model: str = "gemini-2.5-flash"
-    groq_model: str = "llama-3.3-70b-versatile"
+    groq_model: str = "openai/gpt-oss-120b"
     requests_per_minute: int = 8
     max_quotes_per_cluster: int = 15
     max_clusters_analyzed: int = 40

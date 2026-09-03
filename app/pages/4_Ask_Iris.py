@@ -170,6 +170,15 @@ if question:
                     "_(To enable chat: set `LLM_PROVIDER` and the matching API "
                     "key in the app's secrets, then reboot.)_"
                 )
+            elif "model_not_found" in low or "does not exist" in low:
+                answer = (
+                    "The language model I was pointed at has been retired by the "
+                    "provider (free tiers rotate models often).\n\n"
+                    "The analysis on the other pages is unaffected. To restore "
+                    "chat, run `python scripts/check_models.py` and update "
+                    "`llm.synthesis_model` in `config/config.yaml`.\n\n"
+                    f"_Detail: {detail[:160]}_"
+                )
             elif any(t in low for t in ("429", "rate limit", "quota", "resource_exhausted")):
                 answer = (
                     "I've hit the daily free-tier limit for the language model. "

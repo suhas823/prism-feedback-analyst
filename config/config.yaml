@@ -25,12 +25,13 @@ clustering:
 llm:
   provider: groq                   # gemini | groq (overridable via LLM_PROVIDER env var)
   gemini_model: gemini-2.5-flash
-  groq_model: llama-3.3-70b-versatile
+  groq_model: openai/gpt-oss-120b  # Groq retires models often; verify with
+                                   # python scripts/check_models.py
   requests_per_minute: 8           # throttle to stay under free-tier RPM
   max_quotes_per_cluster: 15       # stratified sample size sent to the LLM
   max_clusters_analyzed: 40        # safety cap on per-cluster LLM calls
-  synthesis_model: llama-3.1-8b-instant  # separate Groq daily-token bucket;
-                                   # set to "" to use the main model instead
+  synthesis_model: openai/gpt-oss-20b  # small/fast model for the executive
+                                   # summary and Iris chat; "" = use main model
   cache_dir: .cache/llm
 
 scoring:
