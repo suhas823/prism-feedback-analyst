@@ -1,153 +1,121 @@
-# Interview walkthrough script (7 minutes)
+# Interview walkthrough (about 6 minutes)
 
-For live screen-share. Timings assume the interviewer interrupts, which is good.
-Let them.
+Talking points, not a recital. Read them a few times, then talk normally.
+If you memorise sentences you'll sound like you memorised sentences.
 
-## Before you share your screen
+## Setup before screen share
 
-- Live app open and loaded: your `.streamlit.app` URL
-- Dataset selector on **Spotify (demo dataset)**
-- Second tab open on **Insight Detail**, top theme already selected
-- Close Slack, WhatsApp, and anything with notifications
-- Have the GitHub repo in a third tab in case they ask to see code
+App loaded on the Spotify dataset. Second tab on Insight Detail with the top
+theme already open. Notifications off. GitHub in a third tab in case they want
+code. If the app is slow to wake, say it's on a free tier and keep talking.
 
-If the hosted app is slow to wake, say "it's on a free tier, it cold-starts"
-and keep talking. Don't sit in silence watching a spinner.
+## Opening, before you share anything
 
-## 1. Frame the problem (30 sec, before clicking anything)
+> "So the problem I started with is that companies collect thousands of reviews
+> and support tickets and nobody actually reads them. You can dump it all into
+> ChatGPT and get a summary, but I don't think a PM can act on that. If a tool
+> tells you to fix payments first and you can't check why, you're just trusting
+> it. So the whole thing is built around making every output traceable back to
+> real quotes."
 
-> "Product teams collect thousands of reviews and support tickets, and nobody
-> reads them. The usual fix is to throw it all at an LLM and ask for a summary.
-> That fails for a specific reason: a PM can't act on a summary they can't
-> verify. If the tool says 'fix payments first' and can't show why, it gets
-> ignored.
->
-> So I built Prism around one rule. Every insight has to be able to defend
-> itself."
+## Home
 
-Now share the screen.
+> "This is real data. About four thousand pieces of feedback from two sources,
+> Google Play reviews for Spotify and support tweets to their help account. It
+> found forty themes."
 
-## 2. Home (90 sec)
+Point at 40/40 citations. "I'll come back to that one."
 
-Point at the KPI row.
+> "The ranking isn't the model deciding. It's a formula and you can see the
+> weights: frequency and severity at 35% each, then recency, then whether it
+> shows up in more than one source. That last one is there because if something
+> appears in reviews and in tickets, I trust it more than something sitting in
+> one channel."
 
-> "3,904 pieces of real feedback from two sources: Google Play reviews of
-> Spotify and support tweets to their help account. It found 40 themes."
+Toggle hide-low-confidence. "It also tells you when there isn't enough evidence
+instead of just ranking it anyway."
 
-Point at **Citations verified 40/40**.
+## Insight Detail
 
-> "I'll come back to this number. It's the one I'm proudest of."
-
-Scroll to the ranked themes.
-
-> "This ordering isn't the model's opinion. It's a formula: 35% frequency,
-> 35% severity, 15% recency, 15% source diversity. That last one matters.
-> A problem showing up in both reviews and support tickets is more credible
-> than one living in a single channel."
-
-Toggle **Hide low-confidence themes** in the sidebar.
-
-> "And it tells you when it doesn't have enough evidence instead of bluffing."
-
-## 3. Insight Detail (2 min) — the important screen
-
-Open the top theme.
-
-> "Account Access Issues. 197 items, and look at the source split: 173 support
-> tickets, 24 reviews. People don't leave a review when they're locked out,
-> they contact support. You'd miss this if you only read one source."
+> "Top theme is account access. 197 items. The split is the interesting part,
+> most of it is support tickets and only about 24 reviews. Which makes sense,
+> if you're locked out you don't go write a review, you contact support. So if
+> I'd only looked at reviews I'd have basically missed it."
 
 Root causes:
 
-> "Root causes are labelled hypotheses, deliberately. Feedback text can suggest
-> a cause, it can't prove one. Claiming otherwise would be the kind of
-> overconfidence that makes PMs distrust these tools."
+> "I labelled these as hypotheses deliberately. Feedback can point at a cause
+> but it can't prove one, and I didn't want it stating guesses as fact."
 
-Recommended actions:
+Actions: "These have effort estimates so you could actually take them to
+planning."
 
-> "Actions with effort estimates, not summaries. That's the difference between
-> a report and something you can take to sprint planning."
+Score chart: "And you can see where the 0.77 came from, so if someone argues
+with the ranking there's something to argue with."
 
-The score breakdown chart:
+Evidence, and tell this one properly:
 
-> "Every point of that 0.77 is explained. If a PM challenges the ranking,
-> there's an answer."
-
-Evidence quotes:
-
-> "Real quotes. The starred ones are what the model cited as evidence, and
-> those citations get checked in code against the actual cluster members.
-> If it cites something that isn't there, it's flagged red, not hidden.
->
-> First run, only 19 of 39 passed. I assumed hallucination. Then I read the
-> failures: it was citing real IDs but dropping the source prefix, like a page
-> number without the book title. Fixed the resolver, now it's 40 out of 40,
-> and genuine hallucinations still fail."
+> "The starred quotes are the ones the model said it was using. There's a check
+> in code that those IDs actually exist in the cluster. First run, only 19 out
+> of 39 passed and I assumed it was hallucinating. But I read the failures and
+> it was citing real IDs, it was just dropping the source prefix off the front.
+> So it was my ID format, not the model making things up. Fixed the matching
+> and it's 40 out of 40 now, and actual hallucinations still fail."
 
 Wilson interval:
 
-> "And this is the interval, not a point estimate. Small samples get wide
-> intervals and a warning badge. Twelve angry users shouldn't outrank two
-> hundred quiet ones."
+> "This is a range rather than one number. Small clusters get a wide range and
+> a warning badge. I didn't want twelve loud users outranking two hundred quiet
+> ones."
 
-## 4. Explore Feedback (45 sec)
+## Explore
 
-> "Every dot is one piece of feedback, positioned by meaning. Grey is
-> unclustered, which I show rather than hide. My first clustering run marked
-> 64% as noise, so insights would have covered a third of the data. I ran a
-> parameter sweep, then let the algorithm find dense cores and assign
-> stragglers to the nearest one only if they're actually similar. Noise went
-> to 14% and coverage stayed honest."
+> "Every dot is one piece of feedback placed by meaning. The grey ones didn't
+> fit any theme and I show them rather than hide them. My first version marked
+> 64% as noise, which was useless, the insights would've covered a third of the
+> data. I swept the parameters and changed the approach so it finds the dense
+> groups first and then pulls in nearby stragglers. Got it to 14%."
 
-Search something like "crash" to show it's live data.
+Search "crash" so they can see it's live.
 
-## 5. Ask Iris (45 sec)
+## Iris
 
-> "This is Iris. She only sees the generated insights, so she can't invent
-> a theme that doesn't exist."
+Click a suggested question, read the answer.
 
-Click **What are the top 3 problems?** and read the answer.
+> "She only gets the generated insights as context, so she can't invent a theme
+> that isn't in there. Same numbers as the dashboard because it's the same file."
 
-> "Same numbers as the dashboard, because it's the same source of truth."
+## Close
 
-## 6. Methodology (20 sec) — only if time allows
-
-> "And if anyone challenges a number, this page is the audit trail. Pipeline,
-> the formula with live weights, and the limitations written down."
-
-## 7. Close (30 sec)
-
-> "The architecture point I'd make: classical ML runs per item, the LLM runs
-> per cluster. Embeddings and clustering happen locally on CPU for free, and
-> the model only sees about 40 cluster-level samples. So a run costs 40 API
-> calls whether there are 4,000 items or 40,000, it fits in a free tier, and
-> it's cached so re-runs cost nothing.
+> "The design decision I'd point at is that all the per-item work runs locally.
+> Embeddings, clustering, sentiment, none of it touches an API. The model only
+> sees cluster-level samples, so it's about forty calls per run whether there's
+> four thousand items or forty thousand. That's what keeps it inside a free
+> tier and makes re-runs free.
 >
-> The hard part of this project wasn't calling the model. It was the
-> engineering around it that makes the output trustworthy and affordable."
+> Most of my time went on the parts that make it trustworthy. The AI calls were
+> honestly the easy bit."
 
-## If they interrupt
+## When they interrupt
 
-Good. Answer, then say "let me show you that" and jump to the page. The script
-is a route, not a rail.
+Answer, then say "I can show you" and go to the page. Don't finish your
+sentence first.
 
-## If something breaks live
+## When something breaks
 
-Say what happened plainly and keep moving. If Iris is rate-limited: "free tier,
-daily quota. The analysis is all pre-computed, so everything else works."
-Debugging live is a worse look than acknowledging a limit you designed for.
+Say what it is and move on. Iris rate-limited: "free tier, daily quota. The
+analysis is all pre-computed so the rest works." Do not start debugging.
 
-## If they ask "did you use AI to build this?"
+## "Did you use AI to build this?"
 
-Answer honestly. It's 2026, everyone does, and pretending otherwise reads
-badly.
+Say yes. Everyone does and dodging looks worse.
 
-> "Yes, I used Claude as a coding partner. I made the design decisions: the
-> scoring formula, the per-cluster architecture, the citation check, what to
-> do when the evidence is thin. I also debugged the things that actually broke:
-> 64% clustering noise, two API providers hitting quota limits mid-run, Groq
-> retiring the entire model family my pipeline ran on. Knowing what to build
-> and why it's wrong when it breaks is the part that mattered."
+> "Yeah, Claude wrote a lot of the code. The decisions were mine: the scoring
+> weights, running analysis per cluster instead of per item, adding the citation
+> check. And most of my time went on things breaking. The clustering was
+> useless at first, I hit quota walls on two different providers, and at one
+> point Groq deleted the model my whole pipeline was running on. That's where
+> the real work was."
 
-Then pivot to a decision you can defend in depth. The scoring weights and the
-noise tradeoff are both good ground.
+Then move to something you can go deep on. The scoring weights and the noise
+tradeoff are both good ground.
