@@ -158,10 +158,26 @@ if question:
             with st.spinner("Iris is reading the analysis…"):
                 answer = ask_iris(question, st.session_state.iris_history)
         except Exception as e:
-            answer = (
-                "I hit the LLM rate limit just now — give it a minute and ask "
-                f"again. (Detail: {e})"
-            )
+            detail = str(e)
+            low = detail.lower()
+            if "api_key is not set" in low:
+                answer = (
+                    "I'm not connected to a language model yet. This deployment "
+                    "has no API key configured, so I can't answer questions.\n\n"
+                    "Everything else still works: the ranked themes, evidence "
+                    "quotes, and score breakdowns are all pre-computed. Try "
+                    "**Home** or **Insight Detail**.\n\n"
+                    "_(To enable chat: set `LLM_PROVIDER` and the matching API "
+                    "key in the app's secrets, then reboot.)_"
+                )
+            elif any(t in low for t in ("429", "rate limit", "quota", "resource_exhausted")):
+                answer = (
+                    "I've hit the daily free-tier limit for the language model. "
+                    "The analysis itself is unaffected, it's all pre-computed on "
+                    "the other pages. Chat comes back when the quota resets."
+                )
+            else:
+                answer = f"Something went wrong on my side: {detail}"
         st.markdown(answer)
     st.session_state.iris_history.append({"role": "user", "content": question})
     st.session_state.iris_history.append({"role": "assistant", "content": answer})

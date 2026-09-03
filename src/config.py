@@ -117,4 +117,11 @@ def load_config() -> AppConfig:
     cfg.llm.provider = os.getenv("LLM_PROVIDER", cfg.llm.provider).lower()
     cfg.llm.gemini_api_key = os.getenv("GEMINI_API_KEY", "")
     cfg.llm.groq_api_key = os.getenv("GROQ_API_KEY", "")
+
+    # If the selected provider has no key but the other one does, switch to it
+    # instead of failing. Keeps deploys working when only one secret is set.
+    if cfg.llm.provider == "gemini" and not cfg.llm.gemini_api_key and cfg.llm.groq_api_key:
+        cfg.llm.provider = "groq"
+    elif cfg.llm.provider == "groq" and not cfg.llm.groq_api_key and cfg.llm.gemini_api_key:
+        cfg.llm.provider = "gemini"
     return cfg
