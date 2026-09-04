@@ -14,18 +14,59 @@ import pandas as pd
 
 from src.ingest.base import FeedbackItem, SourceAdapter, hash_author, make_item_id
 
-TEXT_COLS = ["review_text", "content", "Review", "review"]
-RATING_COLS = ["review_rating", "score", "Rating", "rating"]
-TIME_COLS = ["review_timestamp", "at", "Time_submitted", "date"]
+TEXT_COLS = ["review_text", "content", "Review", "review", "text", "body"]
+RATING_COLS = ["review_rating", "score", "Rating", "rating", "stars"]
+TIME_COLS = ["review_timestamp", "at", "Time_submitted", "date", "created_at"]
 ID_COLS = ["review_id", "reviewId", "id"]
 AUTHOR_COLS = ["pseudo_author_id", "author_name", "userName", "user_name"]
 
 
+def _norm(name: str) -> str:
+    """Fold a column name for comparison: 'Star_Rating' -> 'starrating'."""
+    return "".join(ch for ch in str(name).lower() if ch.isalnum())
+
+
 def _pick(df: pd.DataFrame, candidates: list[str]) -> Optional[str]:
-    for col in candidates:
-        if col in df.columns:
-            return col
+    """Find the first column matching any candidate.
+
+    Matching is case- and separator-insensitive, so 'Review_Text', 'review text'
+    and 'reviewText' all match the candidate 'review_text'. Exact matches win
+    over partial ones ('Star_Rating' matches the candidate 'rating').
+    """
+    normalized = {_norm(c): c for c in df.columns}
+
+    for cand in candidates:
+        hit = normalized.get(_norm(cand))
+        if hit is not None:
+            return hit
+
+    for cand in candidates:
+        n_cand = _norm(cand)
+        if len(n_cand) < 4:  # too short to match on safely ('at', 'id')
+            continue
+        for n_col, col in normalized.items():
+            if n_cand in n_col or n_col in n_cand:
+                return col
     return None
+
+
+def guess_text_column(df: pd.DataFrame) -> Optional[str]:
+    """Best guess at the free-text column: a name match, else the column with
+    the longest average text. Falling back to the first column is a trap, since
+    that is usually a row number."""
+    named = _pick(df, TEXT_COLS)
+    if named is not None:
+        return named
+
+    best, best_len = None, 0.0
+    for col in df.columns:
+        if df[col].dtype.kind in "ifbc":  # numeric or boolean, not free text
+            continue
+        avg = df[col].astype(str).str.len().mean()
+        if avg > best_len:
+            best, best_len = col, avg
+    # Free-text feedback is meaningfully longer than labels or IDs.
+    return best if best_len >= 20 else (best or (df.columns[0] if len(df.columns) else None))
 
 
 class PlayStoreReviewsAdapter(SourceAdapter):

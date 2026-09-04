@@ -11,7 +11,13 @@ from shared import PROJECT_ROOT, list_workspaces
 
 sys.path.insert(0, str(PROJECT_ROOT))
 
-from src.ingest.reviews_loader import RATING_COLS, TEXT_COLS, TIME_COLS, _pick  # noqa: E402
+from src.ingest.reviews_loader import (  # noqa: E402
+    RATING_COLS,
+    TEXT_COLS,
+    TIME_COLS,
+    _pick,
+    guess_text_column,
+)
 
 # The upload pipeline needs the heavy ML stack (torch, scikit-learn,
 # sentence-transformers). The hosted view-only demo installs the slim
@@ -86,8 +92,14 @@ cols = list(raw.columns)
 NONE = "(none)"
 
 c1, c2, c3 = st.columns(3)
-text_guess = _pick(raw, GENERIC_TEXT_COLS) or cols[0]
+text_guess = guess_text_column(raw) or cols[0]
 text_col = c1.selectbox("Feedback text *", cols, index=cols.index(text_guess))
+_avg_len = raw[text_col].astype(str).str.len().mean()
+if _avg_len < 20:
+    c1.warning(
+        f"'{text_col}' averages only {_avg_len:.0f} characters. That looks like "
+        "an ID or label rather than feedback text. Pick another column."
+    )
 
 rating_guess = _pick(raw, RATING_COLS)
 rating_col = c2.selectbox(
