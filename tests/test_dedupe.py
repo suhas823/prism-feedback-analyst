@@ -63,3 +63,39 @@ class TestCleanText:
 
     def test_collapses_whitespace(self):
         assert clean_text("a   b\n\nc") == "a b c"
+
+
+class TestCleanCorpusEmptyPath:
+    """Regression: an empty frame after the length filter used to crash with
+    'invalid literal for int() with base 10' when computing language stats."""
+
+    @staticmethod
+    def _frame(texts):
+        return pd.DataFrame(
+            {
+                "id": [f"x:{i}" for i in range(len(texts))],
+                "source": "s",
+                "text": texts,
+                "rating": np.nan,
+                "timestamp": pd.Series(
+                    pd.NaT, index=range(len(texts)), dtype="datetime64[ns, UTC]"
+                ),
+            }
+        )
+
+    def test_all_rows_too_short_does_not_crash(self):
+        from src.preprocess.clean import clean_corpus
+
+        out, stats = clean_corpus(self._frame(["ok"] * 50), min_chars=15)
+        assert out.empty
+        assert stats["dropped_too_short"] == 50
+        assert stats["dropped_non_english"] == 0
+        assert stats["output"] == 0
+
+    def test_normal_corpus_still_filters(self):
+        from src.preprocess.clean import clean_corpus
+
+        texts = ["the app crashes constantly on startup"] * 10 + ["ok"] * 3
+        out, stats = clean_corpus(self._frame(texts), min_chars=15)
+        assert len(out) == 10
+        assert stats["dropped_too_short"] == 3

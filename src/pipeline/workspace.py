@@ -101,9 +101,28 @@ def run_analysis(
     progress(f"Cleaning {len(df):,} items (language filter, noise stripping)…")
     df, clean_stats = clean_corpus(df, cfg.preprocess.min_text_chars, cfg.preprocess.language)
     if len(df) < 20:
+        short = clean_stats.get("dropped_too_short", 0)
+        foreign = clean_stats.get("dropped_non_english", 0)
+        reasons = []
+        if short:
+            reasons.append(
+                f"{short} were shorter than {cfg.preprocess.min_text_chars} characters "
+                "after cleaning"
+            )
+        if foreign:
+            reasons.append(f"{foreign} were not detected as English")
+        why = "; ".join(reasons) or "no rows survived cleaning"
+        hint = ""
+        if short > clean_stats.get("input", 0) * 0.8:
+            hint = (
+                "\n\nMost rows were dropped for length, which usually means the "
+                "**Feedback text** column is mapped to the wrong column (an ID, "
+                "rating, or category rather than the review text). Check the "
+                "column mapping above."
+            )
         raise ValueError(
-            f"Only {len(df)} usable items after cleaning — need at least 20. "
-            f"(Stats: {clean_stats})"
+            f"Only {len(df)} usable items after cleaning, and at least 20 are "
+            f"needed to find themes. Of {clean_stats.get('input', 0)} rows: {why}.{hint}"
         )
     df, _ = drop_exact_dupes(df)
 

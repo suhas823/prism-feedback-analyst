@@ -1,6 +1,7 @@
 """New Analysis: upload any feedback CSV → full pipeline → new workspace."""
 
 import sys
+import traceback
 
 import pandas as pd
 import streamlit as st
@@ -130,7 +131,9 @@ if st.button("✦ Analyze", type="primary", use_container_width=True):
             )
         except Exception as e:
             status.update(label="Analysis failed", state="error")
-            st.error(str(e))
+            st.error(f"{type(e).__name__}: {e}")
+            with st.expander("Technical details (paste this if reporting a bug)"):
+                st.code(traceback.format_exc(), language="text")
             st.stop()
         status.update(
             label=f"Done — {n_insights} themes analyzed", state="complete", expanded=False

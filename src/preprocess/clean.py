@@ -47,13 +47,16 @@ def clean_corpus(
     df = df.copy()
     df["text_clean"] = df["text"].astype(str).map(clean_text)
 
-    long_enough = df["text_clean"].str.len() >= min_chars
-    stats["dropped_too_short"] = int((~long_enough).sum())
+    long_enough = (df["text_clean"].str.len() >= min_chars).astype(bool)
+    stats["dropped_too_short"] = int(long_enough.eq(False).sum())
     df = df[long_enough]
 
-    if language == "en":
-        is_lang = df["text_clean"].map(_is_english)
-        stats["dropped_non_english"] = int((~is_lang).sum())
+    stats["dropped_non_english"] = 0
+    if language == "en" and not df.empty:
+        # .astype(bool) matters: on an empty frame .map() yields an object-dtype
+        # Series whose inverted sum is '' rather than 0, which then breaks int().
+        is_lang = df["text_clean"].map(_is_english).astype(bool)
+        stats["dropped_non_english"] = int(is_lang.eq(False).sum())
         df = df[is_lang]
 
     df = df.reset_index(drop=True)
